@@ -1,0 +1,68 @@
+#!/bin/bash
+
+show_usage() {
+    cat << EOF
+Usage: ./dev [command] [options]
+
+Commands:
+    help                            Show this help message
+    initial-setup                   Install application dependencies
+
+Examples:
+    ./dev help
+    ./dev initial-setup
+EOF
+}
+
+initial_setup() {
+    echo "Installing application dependencies..."
+
+    _ensure_nvm
+    _install_node
+    _initial_npm_build
+
+    echo "Setup completed"
+}
+
+_ensure_nvm() {
+    [ -s "$HOME/.nvm/nvm.sh" ] && . "$HOME/.nvm/nvm.sh"
+
+    if ! type nvm &> /dev/null; then
+        echo "NVM not found. Installing NVM..."
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+
+        # Source NVM
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+        echo "NVM installed successfully"
+    else
+      echo "NVM is installed"
+    fi
+}
+
+_install_node() {
+      echo "Installing node"
+      nvm install
+      nvm use
+      echo node -v
+}
+
+_initial_npm_build() {
+      echo "Running NPM Build & Setup"
+      npm run setup
+      npm run build
+      echo "NPM build complete"
+}
+
+
+# main command handler
+case "${1:-help}" in
+    help)
+        show_usage
+        ;;
+    initial-setup)
+        initial_setup
+        ;;
+esac

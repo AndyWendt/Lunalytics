@@ -8,10 +8,13 @@ const filter = /\.(js|mjs|json|css|svg|html)$/i;
 export default defineConfig({
   plugins: [
     react(),
-    compression({ algorithm: 'gzip', filter }),
-    compression({ algorithm: 'brotliCompress', filter }),
+    // compression({ algorithm: 'gzip', filter }),
+    // compression({ algorithm: 'brotliCompress', filter }),
     visualizer({ filename: './stats/stats.html' }),
   ],
   define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version) },
   css: { preprocessorOptions: { scss: { api: 'modern-compiler' } } },
+  build: {
+    sourcemap: true,
+  }
 });
